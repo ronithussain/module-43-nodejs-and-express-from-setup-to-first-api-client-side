@@ -1,30 +1,20 @@
 import { Suspense } from "react";
+import UserList from "../components/UserList";
 
-const UsersPage = async () => {
+const getUsersPromise = async () => {
   const data = await fetch("http://localhost:5000/users");
-  const users = await data.json();
-  console.log(users);
+  return data.json();
+};
+const UsersPage = async () => {
+  const getUsers = getUsersPromise();
+  
   return (
     <div>
-      {users.map((user: { id: number; name: string; email: string }) => (
-        <div key={user.id}>
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const UserList = () => {
-  return (
-    <div className="container mx-auto max-w-5xl">
-      <h1>All Users</h1>
       <Suspense fallback={<p>Loading users...</p>}>
-        <UsersPage />
+        <UserList getUsersPromise={getUsers} />
       </Suspense>
     </div>
   );
 };
 
-export default UserList;
+export default UsersPage;
